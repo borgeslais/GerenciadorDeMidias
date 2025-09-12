@@ -1,0 +1,60 @@
+cadastro de itens
+cadastro de  usuario
+emprestimo e devolução
+relatórios
+  - listar emprestimos ativos
+  - historico detalhado de usuarios
+  - itens com lista de espera não vazia e usuarios associados
+  - relatorio de uso
+edição
+  - editar dados de itens e usuários existentes
+validação e consistencia
+  - validar dados de entrada de usuarios e itens
+  - impedir emprestimos simultaneos de um mesmo item para diferentes usuarios
+  - avisar usuario quando possio emprestimo atrasado
+busca de itens
+  - busca por palavra-chave/autor/título ou combinação de campos
+geração de estatisticas de uso
+  - lista dos itens mais emprestados no período
+  - usuários mais ativos (com mais emprestimos)
+  - frequencia de emprestimos por mês, tipo de midia ou categoria
+auditoria e historico
+  - guardar log de operações relevantes
+  - relatar alterações (histórico de edições)
+importação e exportação de dados (formato csv)
+ordenação de listas
+
+
+REQUISITOS TÉCNICOS (
+  O sistema deve ser totalmente funcional, atendendo aos seguintes critérios:
+
+Lógica e Estrutura de Dados
+
+- Não utilizar variáveis mutáveis ou efeitos colaterais, exceto onde for estritamente necessário para entrada e saída (I/O).
+- Utilizar tipos algébricos para representar:
+  - Livros
+  - Usuários
+  - Empréstimos
+- Utilizar funções puras para manipulação dos dados.
+- Utilizar listas e funções de ordem superior para processar coleções.
+
+Persistência de Dados
+
+- Persistir os dados em arquivos de texto simples, com suporte a:
+  - Leitura
+  - Escrita
+
+Interface do Usuário
+
+- Interface via linha de comando, com:
+  - Menu textual principal
+  - Submenus aninhados
+  - Possibilidade de retorno entre menus
+
+Implementações com Recursão Direta
+
+Os seguintes requisitos devem ser implementados usando recursão direta, sem o uso de funções de ordem superior:
+
+- Busca binária por código único.
+- Verificação recursiva de duplicatas em múltiplas listas de espera.
+)
