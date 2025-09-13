@@ -11,7 +11,7 @@ edição
 validação e consistencia
   - validar dados de entrada de usuarios e itens
   - impedir emprestimos simultaneos de um mesmo item para diferentes usuarios
-  - avisar usuario quando possio emprestimo atrasado
+  - avisar usuario quando possui emprestimo atrasado
 busca de itens
   - busca por palavra-chave/autor/título ou combinação de campos
 geração de estatisticas de uso
