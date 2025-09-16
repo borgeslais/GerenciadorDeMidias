@@ -2,8 +2,9 @@ module Validation where
 import Types
 import Data.Time (Year)
 import Data.Char (ord)
-import Data.Char (isAlphaNum, isDigit, isLetter)
+import Data.Char (isAlphaNum, isDigit, isLetter, isSpace)
 import Data.List (elemIndex)
+import Algorithms (buscarCod)
 
 {- Provisório. Trocá-lo-ei por uma função que verifica com o ano atual.
 Isso, porém, é uma operação de entrada, então a farei depois, separada das funções puras. -}
@@ -18,25 +19,109 @@ validarMidia m
  | any (== m) ["Livro", "Filme", "Jogo"] = Valido
  | otherwise = Invalido
 
--- Verifica se o título ou o autor não tem só espaços em branco
-validarTitAut :: String -> Validade
-validarTitAut s
-  | (any (/= ' ') s) == False = Invalido
-  | otherwise = Valido
+-- Funções auxiliares para validar título e autor
+
+--Limite de tamanho:
+  --Mínimo: 2 caracteres válidos (sem contar espaços)
+  --Máximo: 100 caracteres total
+
+--Validação de caracteres:
+  --Permite apenas letras, números e caracteres especiais apropriados
+  --Inclui acentos e caracteres em português
+  --Remove espaços do início e fim antes de validar
+
+--Funções especializadas:
+  --validarAutor: Mais restritiva, não permite muitos números
+  --validarTitulo: Mais permissiva, permite pontuação adicional
+
+-- Configurações de limite
+limiteMinimo :: Int
+limiteMinimo = 2  -- Pelo menos 2 caracteres válidos
+limiteMaximo :: Int  
+limiteMaximo = 100  -- Máximo 100 caracteres total
+
+-- Remove espaços em branco do início e fim
+removerEspacos :: String -> String
+removerEspacos = reverse . dropWhile isSpace . reverse . dropWhile isSpace
+
+-- Verifica se todos os caracteres são válidos para nomes/títulos
+todosCaracteresValidos :: String -> Bool
+todosCaracteresValidos = all caracterValido
+
+-- Caracteres válidos para títulos (mais permissivos)
+todosCaracteresValidosTitulo :: String -> Bool
+todosCaracteresValidosTitulo = all caracterValidoTitulo
+
+-- Caracteres válidos especificamente para nomes de autores
+caracterValidoAutor :: Char -> Bool
+caracterValidoAutor c = isLetter c || c `elem` " .'-áéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ"
+
+todosCaracteresValidosAutor :: String -> Bool
+todosCaracteresValidosAutor = all caracterValidoAutor
+
+-- Verifica se há excesso de números (para autores)
+temNumeroExcessivo :: String -> Bool
+temNumeroExcessivo s = length (filter isDigit s) > 2
+
+caracterValidoTitulo :: Char -> Bool
+caracterValidoTitulo c = isLetter c || isDigit c || c `elem` caracteresPermitidosTitulo
+
+caracteresPermitidosTitulo :: String
+caracteresPermitidosTitulo = " .,'-():!?;\"&+áéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ"
+
+-- Define quais caracteres são válidos
+caracterValido :: Char -> Bool
+caracterValido c = isLetter c || isDigit c || c `elem` caracteresPermitidos
+
+-- Caracteres especiais permitidos além de letras e números
+caracteresPermitidos :: String
+caracteresPermitidos = " .,'-():!?áéíóúàèìòùâêîôûãõçÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÃÕÇ"
+
+-- Versão mais específica para autores (sem alguns símbolos)
+validarAutor :: String -> Validade
+validarAutor s
+    | null (removerEspacos s) = Invalido
+    | length s > 80 = Invalido  -- Limite menor para nomes
+    | length (removerEspacos s) < 2 = Invalido
+    | not (todosCaracteresValidosAutor s) = Invalido
+    | temNumeroExcessivo s = Invalido  -- Autor não deve ter muitos números
+    | otherwise = Valido
+
+-- Versão específica para títulos (permite mais símbolos)
+validarTitulo :: String -> Validade
+validarTitulo s
+    | null (removerEspacos s) = Invalido
+    | length s > 200 = Invalido  -- Títulos podem ser mais longos
+    | length (removerEspacos s) < 1 = Invalido
+    | not (todosCaracteresValidosTitulo s) = Invalido
+    | otherwise = Valido
 
 -- Testa se a string é composta apenas por números.
 testeNum :: String -> Validade
-testeNum [] = Valido
-testeNum (x:xs) = if any (== (ord x)) [48..57]
-                    then testeNum xs
-                    else Invalido
+testeNum xs = if all isDigit xs
+              then Valido
+              else Invalido
 
--- Verifica se o código tem mais de 4 caracteres
--- e é formado só por números.
-validarCodigo :: String -> Validade
-validarCodigo xs = if (length xs) < 5
-                        then Invalido
-                        else testeNum xs
+-- Função auxiliar para verificar se código já existe
+codigoJaExiste :: String -> [Item] -> Bool
+codigoJaExiste cod listaItens = 
+    let itemTemporario = Item { codigo = cod }
+        itensEncontrados = buscarCod itemTemporario listaItens
+    in not (null itensEncontrados)
+
+-- Função principal para validar o código
+validarCodigo :: String -> [Item] -> Validade
+validarCodigo xs listaItens = 
+    if length xs /= 4
+    then Invalido
+    else if testeNum xs == Invalido
+         then Invalido
+         else if codigoJaExiste xs listaItens
+              then Invalido
+              else Valido
+
+
+-- Fazer função de validação para o item inteiro, comparar todos os campos do item depois de ver se todos são válidos.
 
 -- Funções auxiliares para validar EMAIL -- Avaliação seguindo padrões RFC básicos
 
