@@ -50,6 +50,13 @@ igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid, sta]
         sta = if (status i1 == Nulo)
                then True else status i1 == status i2
 
+
+igualFiltroCod :: Item -> Item -> Bool
+igualFiltroCod item1 item2 = codigo item1 == codigo item2
+
 buscar :: Item -> [Item] -> [Item]
 buscar it xs = filter (igualFiltro it) xs
+
+buscarCod :: Item -> [Item] -> [Item]
+buscarCod it xs = filter (igualFiltroCod it) xs
 
