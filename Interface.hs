@@ -16,7 +16,7 @@ linha = do
 menuPrincipal :: [Item] -> IO ()
 menuPrincipal listaIt = do
     linha
-    putStrLn "  Sistema de Mídias - Menu Principal"
+    putStrLn "  Sistema de Mı́dias - Menu Principal"
     linha
     putStrLn "1 - Cadastro de Itens"
     putStrLn "2 - Cadastro de Usuários"
@@ -40,7 +40,7 @@ menuPrincipal listaIt = do
         "7" -> menuExpImp listaIt
         "8" -> menuAuditHist listaIt
     -- Nao implementei o 0 ainda
-        _    -> do
+        _   -> do
             putStrLn "\nOpção inválida!\n"
             menuPrincipal listaIt 
 
@@ -55,6 +55,17 @@ menuCadastroItens listaIt = do
     putStrLn "3 - Listar itens cadastrados"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "3" -> 
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuCadastroItens listaIt           -}
+            
 
 -- SUBMENU: Cadastro de Usuários --
 menuCadastroUsuarios :: [Item] -> IO ()
@@ -67,6 +78,18 @@ menuCadastroUsuarios listaIt = do
     putStrLn "3 - Listar usuários cadastrados"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "3" -> 
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuCadastroUsuarios listaIt           -}
+
+
 
 -- SUBMENU: Empréstimos e Devoluções  --
 menuEmpDev:: [Item] -> IO ()
@@ -81,6 +104,20 @@ menuEmpDev listaIt = do
     putStrLn "5 - Empréstimo/devolução em lote"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "3" -> 
+        "4" ->
+        "5" ->
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuEmpDev listaIt           -}
+            
+
 
 -- SUBMENU: Busca e Listagem Avançada --
 menuBuscaListagem :: [Item] -> IO ()
@@ -95,6 +132,20 @@ menuBuscaListagem listaIt = do
     putStrLn "5 - Ordenar resultados (tı́tulo, ano, autor/diretor)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "3" -> 
+        "4" ->
+        "5" ->
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuBuscaListagem listaIt           -}
+            
+            
 
 -- SUBMENU: Relatórios e Estatı́sticas --
 menuRelatEstat :: [Item] -> IO ()
@@ -110,6 +161,21 @@ menuRelatEstat listaIt = do
     putStrLn "6 - Relatório de operações (por usuário/tipo de item)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "3" -> 
+        "4" ->
+        "5" ->
+        "6" ->
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuRelatEstat listaIt           -}
+
+
 
 -- SUBMENU: Edição de Dados --
 menuEdicao :: [Item] -> IO ()
@@ -121,6 +187,17 @@ menuEdicao listaIt = do
     putStrLn "2 - Editar usuário"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuEdicao listaIt           -}
+
+
 
 -- SUBMENU: Exportação/Importação --
 menuExpImp :: [Item] -> IO ()
@@ -132,6 +209,16 @@ menuExpImp listaIt = do
     putStrLn "2 - Importar dados de CSV"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuExpImp listaIt           -}
+
 
 -- SUBMENU: Auditoria e Histórico --
 menuAuditHist :: [Item] -> IO ()
@@ -143,4 +230,14 @@ menuAuditHist listaIt = do
     putStrLn "2 - Exibir histórico de alterações"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
+{-
+    opcao <- getLine
+    case opcao of
+        "1" -> 
+        "2" -> 
+        "0" -> menuPrincipal listaIt
+        _   -> do
+            putStrLn "\nOpção inválida!\n"
+            menuAuditHist listaIt           -}
 
+------------------------------------------------
