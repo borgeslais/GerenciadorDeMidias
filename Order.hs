@@ -35,8 +35,8 @@ maiorIgR f x y
  | otherwise = False
 
 -- Diferentes formas de ordenar itens
-compareItems :: String -> Item -> Item -> Ordering
-compareItems "AUTOR" i1 i2 = compare (autor i1) (autor i2)
-compareItems "TITULO" i1 i2 = compare (titulo i1) (titulo i2)
-compareItems "ANO" i1 i2 = compare (ano i1) (ano i2)
-compareItems "CODIGO" i1 i2 = compare (codigo i1) (codigo i2)
+compareItem :: String -> Item -> Item -> Ordering
+compareItem "AUTOR" i1 i2 = compare (autor i1) (autor i2)
+compareItem "TITULO" i1 i2 = compare (titulo i1) (titulo i2)
+compareItem "ANO" i1 i2 = compare (ano i1) (ano i2)
+compareItem "CODIGO" i1 i2 = compare (codigo i1) (codigo i2)
