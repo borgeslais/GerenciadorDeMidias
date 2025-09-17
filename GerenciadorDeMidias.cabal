@@ -1,0 +1,42 @@
+cabal-version: >=1.24
+name:           GerenciadorDeMidias
+version:        0.1.0.0
+build-type:     Simple
+
+library
+  hs-source-dirs: src
+  exposed-modules:
+      Algorithms
+      ExportImport
+      Interface
+      ItemsOperations
+      Loans
+      Menu
+      Order
+      Reports
+      Search
+      Types
+      UsersOperations
+      Validation
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable GerenciadorDeMidias
+  main-is:          Main.hs
+  hs-source-dirs:   app
+  build-depends:
+      base >=4.7 && <5,
+      GerenciadorDeMidias
+  default-language: Haskell2010
+
+test-suite GerenciadorDeMidias-test
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
+  hs-source-dirs:   test
+  build-depends:
+      base >=4.7 && <5,
+      GerenciadorDeMidias,
+      tasty,
+      tasty-hunit
+  default-language: Haskell2010
