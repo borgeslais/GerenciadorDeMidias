@@ -2,6 +2,8 @@ module Algorithms where
 import Types
 import Order
 import Data.Char (toUpper)
+import Data.Time.Calendar
+import Data.Time
 
 -- QuickSort compatível com as relações de ordenação inusuais permitidas por Order.hs
 quickSort :: (a -> a -> Ordering) -> [a] -> [a]
@@ -86,3 +88,26 @@ buscarUsMat mat = buscarUs us
 buscarUsRepetido :: Usuario -> [Usuario] -> [Usuario]
 buscarUsRepetido us = buscarUs us'
   where us' = us {matricula = ""}
+
+
+-- Para Emprestimos
+-- data para UTC
+dataGenerica :: UTCTime
+dataGenerica = UTCTime (fromGregorian 2000 01 01) (secondsToDiffTime 0)
+
+igualFiltroEmp :: Emprestimo -> Emprestimo -> Bool
+igualFiltroEmp emp1 emp2 = all (==True) [cod, mat, dd] 
+  where cod = if (codigoIt emp1 == "") 
+               then True else (codigoIt emp1) == (codigoIt emp2)
+        mat = if (matriculaUs emp1 == "") 
+               then True else matriculaUs emp1 == matriculaUs emp2
+        dd = if (dia emp1 == dataGenerica) 
+               then True else dia emp1 == dia emp2
+
+buscarEmp :: Emprestimo -> [Emprestimo] -> [Emprestimo]
+buscarEmp emp xs = filter (igualFiltroEmp emp) xs
+
+buscarEmpCod:: String -> [Emprestimo] -> [Emprestimo]
+buscarEmpCod cod = buscarEmp emp
+  where emp = generico {codigoIt = cod}
+        generico = Emprestimo {codigoIt = "", matriculaUs = "", dia = dataGenerica}
