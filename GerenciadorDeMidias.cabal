@@ -8,18 +8,21 @@ library
   exposed-modules:
       Algorithms
       ExportImport
+      ImpureFunctions
       Interface
       ItemsOperations
       Loans
       Menu
       Order
+      Reading
       Reports
       Search
       Types
       UsersOperations
       Validation
   build-depends:
-      base >=4.7 && <5
+      base >=4.7 && <5,
+      time
   default-language: Haskell2010
 
 executable GerenciadorDeMidias

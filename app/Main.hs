@@ -1,7 +1,7 @@
 module Main where
 
 import Interface
-import Leitura
+import Reading
 
 main :: IO ()
 main = do interface

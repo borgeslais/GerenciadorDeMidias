@@ -5,7 +5,7 @@ import Data.Char (ord)
 import Data.Char (isAlphaNum, isDigit, isLetter, isSpace)
 import Data.List (elemIndex)
 import Algorithms (buscarItCod, buscarItRepetido, buscarUsRepetido, buscarUsMat)
-import Leitura (separarEm)
+import Reading (separarEm)
 
 -- Bool pra Validade
 boolValidade :: Bool -> Validade

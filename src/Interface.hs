@@ -4,8 +4,8 @@ import Types
 import Algorithms
 import Order
 import Validation
-import Leitura
-import FuncoesImpuras
+import Reading
+import ImpureFunctions
 import Data.Time (Year)
 import System.IO (stdout, hSetBuffering, BufferMode (NoBuffering))
 

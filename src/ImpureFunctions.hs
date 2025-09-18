@@ -1,8 +1,8 @@
-module FuncoesImpuras where
+module ImpureFunctions where
 
 import Types
 import Algorithms
-import Leitura
+import Reading
 import Loans
 import Order
 import Validation

@@ -1,4 +1,4 @@
-module Leitura where
+module Reading where
 
 import Types
 import Algorithms

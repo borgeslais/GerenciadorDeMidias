@@ -61,4 +61,3 @@ instance Show Usuario where
   show (Usuario n m e) = "Nome: " ++ n ++
                          ", Matricula: " ++ m ++
                          ", e-mail: " ++ e
--}

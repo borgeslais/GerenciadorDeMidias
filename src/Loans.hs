@@ -4,7 +4,7 @@ import Types
 import Algorithms
 import Validation
 import Data.Time
-import Leitura (separarEm)
+import Reading (separarEm)
 
 -- Presume que o empréstimo já foi validado
 relacaoDeUmEmprestimo :: Emprestimo -> [Usuario] -> [Item] -> String
