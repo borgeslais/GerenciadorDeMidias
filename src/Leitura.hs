@@ -48,7 +48,7 @@ lerVariosUsuarios (x:xs) = lerUsuario x : lerVariosUsuarios xs
 
 
 formatarItem :: Item -> String
-formatarItem it = (titulo it) ++ "," ++
+formatarItem it = "\n" ++ (titulo it) ++ "," ++
                   (autor it) ++ "," ++
                   (show (ano it)) ++ "," ++
                   (codigo it) ++ "," ++
