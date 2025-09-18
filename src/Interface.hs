@@ -35,13 +35,13 @@ interface = do hSetBuffering stdout NoBuffering
 menuPrincipal :: [Item] -> [Usuario] -> IO ()
 menuPrincipal listaIt listaUs = do
     linha
-    putStrLn "  Sistema de Mı́dias - Menu Principal"
+    putStrLn "Sistema de Midias - Menu Principal"
     linha
     putStrLn "1 - Cadastro de Itens"
     putStrLn "2 - Cadastro de Usuários"
     putStrLn "3 - Empréstimos e Devoluções"
     putStrLn "4 - Busca e Listagem Avançada"
-    putStrLn "5 - Relatórios e Estatı́sticas"
+    putStrLn "5 - Relatórios e Estatisticas"
     putStrLn "6 - Edição de Dados"
     putStrLn "7 - Exportação/Importação de Dados"
     putStrLn "8 - Auditoria e Histórico"
@@ -83,7 +83,7 @@ menuCadastroItens listaIt listaUs = do
                      not (itemJaExiste it listaIt)
                    then do inserirItem "itens.csv" it listaIt
                            let novaListaIt = colocarNaLista it listaIt
-                           putStr ("\n" ++ (formatarItem it))
+                           putStr ("\n" ++ (formatarItem it) ++ "\n")
                            menuPrincipal novaListaIt listaUs
                    else do putStrLn "Ocorreu algo de errado com a inserção."
                            menuCadastroItens listaIt listaUs
@@ -189,11 +189,11 @@ menuBuscaListagem listaIt = do
     linha
     putStrLn "\tBusca e Listagem Avançada"
     linha
-    putStrLn "1 - Buscar por tı́tulo"
+    putStrLn "1 - Buscar por titulo"
     putStrLn "2 - Buscar por autor/diretor"
     putStrLn "3 - Busca combinada (múltiplos campos)"
     putStrLn "4 - Filtrar por categoria"
-    putStrLn "5 - Ordenar resultados (tı́tulo, ano, autor/diretor)"
+    putStrLn "5 - Ordenar resultados (titulo, ano, autor/diretor)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
 {-
@@ -211,16 +211,16 @@ menuBuscaListagem listaIt = do
             
             
 
--- SUBMENU: Relatórios e Estatı́sticas --
+-- SUBMENU: Relatórios e Estatisticas --
 menuRelatEstat :: [Item] -> IO ()
 menuRelatEstat listaIt = do
     linha
-    putStrLn "\tRelatórios e Estatı́sticas"
+    putStrLn "\tRelatórios e Estatisticas"
     linha
     putStrLn "1 - Empréstimos ativos (por categoria)"
     putStrLn "2 - Usuários mais ativos"
     putStrLn "3 - Itens mais emprestados"
-    putStrLn "4 - Frequência de empréstimos por perı́odo"
+    putStrLn "4 - Frequência de empréstimos por periodo"
     putStrLn "5 - Itens com lista de espera"
     putStrLn "6 - Relatório de operações (por usuário/tipo de item)"
     putStrLn "0 - Voltar ao menu principal"
