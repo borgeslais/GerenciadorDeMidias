@@ -17,10 +17,11 @@ ghc --version
 cabal --version
 stack --version
 
-````
+```
 
 ## Estrutura do Projeto
 
+```bash
 GerenciadorDeMidias/
 ├── app/
 │   └── Main.hs          # ponto de entrada da aplicação
@@ -29,14 +30,19 @@ GerenciadorDeMidias/
 ├── GerenciadorDeMidias.cabal
 ├── stack.yaml
 └── README.md
+```
 
 
 ## Para compilar e executar
 usando stack (recomendado)
+
+```bash
 stack setup     # prepara o compilador (apenas na primeira vez)
 stack build     # compila
 stack run       # executa
-
+ ```
 ou usando cabal
+```bash
 cabal v2-build          # compila
 cabal v2-run GerenciadorDeMidias # executa
+```
