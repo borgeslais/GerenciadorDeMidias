@@ -4,7 +4,7 @@ import Data.Time (Year)
 import Data.Char (ord)
 import Data.Char (isAlphaNum, isDigit, isLetter, isSpace)
 import Data.List (elemIndex)
-import Algorithms (buscarItCod)
+import Algorithms (buscarItCod, buscarItRepetido, buscarUsRepetido, buscarUsMat)
 import Leitura (separarEm)
 
 -- Bool pra Validade
@@ -22,10 +22,9 @@ validarAnoYear :: Year -> TipoMidia -> Validade
 validarAnoYear y m =
   case m of
    Livro -> if (y >= 1800) && (y <= 2025) then Valido else Invalido
-   Filme -> if (y >= 1995) && (y <= 2025) then Valido else Invalido -- A partir do DVD
+   Filme -> if (y >= 1930) && (y <= 2025) then Valido else Invalido 
    Jogo -> if (y >= 2000) && (y <= 2025) then Valido else Invalido  -- A partir da 6a ger. (ecluído o DreamCast)
 
--- Não sei será necessário quando da implementação da interface.
 validarMidia :: String -> Validade
 validarMidia m
  | any (== m) ["Livro", "Filme", "Jogo"] = Valido
@@ -118,6 +117,11 @@ testeNum xs = if all isDigit xs
 codigoJaExiste :: String -> [Item] -> Bool
 codigoJaExiste cod listaItens
  | buscarItCod cod listaItens == [] = False
+ | otherwise = True
+
+matriculaJaExiste :: String -> [Usuario] -> Bool
+matriculaJaExiste mat listaUsuarios
+ | buscarUsMat mat listaUsuarios == [] = False
  | otherwise = True
 
 validCodigo :: String -> Validade
@@ -240,3 +244,25 @@ validarItem it = if validarTitulo (titulo it) == Valido &&
 
 filtrarItensValidos :: [Item] -> [Item]
 filtrarItensValidos xs = filter ((== Valido).(validarItem)) xs
+
+itemJaExiste :: Item -> [Item] -> Bool
+itemJaExiste it listaIt
+ | buscarItRepetido it listaIt == [] = False
+ | otherwise = True
+
+
+-- VALIDAR USUARIO inteiro
+validarUsuario :: Usuario -> Validade
+validarUsuario us = if validarAutor (nome us) == Valido &&
+                       validarEmail (email us) == Valido &&
+                       validCodigo (matricula us) == Valido
+                     then Valido
+                     else Invalido
+
+filtrarUsuariosValidos :: [Usuario] -> [Usuario]
+filtrarUsuariosValidos xs = filter ((== Valido).(validarUsuario)) xs
+
+usuarioJaExiste :: Usuario -> [Usuario] -> Bool
+usuarioJaExiste us listaUs
+ | buscarUsRepetido us listaUs == [] = False
+ | otherwise = True
