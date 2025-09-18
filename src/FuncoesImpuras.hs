@@ -3,23 +3,33 @@ module FuncoesImpuras where
 import Types
 import Algorithms
 import Leitura
+import Loans
 import Order
 import Validation
-import Data.Time (Year)
+import Data.Time (Year, getCurrentTime)
 
 -- Arq Item
-inserirItem :: FilePath -> Item -> [Item] -> IO ()
-inserirItem fp it listaIt = appendFile fp (formatarItem it)
+inserirItem :: FilePath -> Item -> IO ()
+inserirItem fp it = appendFile fp (formatarItem it)
 
 listaItParaArq :: FilePath -> [Item] -> IO ()
 listaItParaArq fp listaIt = writeFile fp (unlines (map formatarItem listaIt))
 
 -- Arq Usuario
-inserirUsuario :: FilePath -> Usuario -> [Usuario] -> IO ()
-inserirUsuario fp us listaUs = appendFile fp (formatarUsuario us)
+inserirUsuario :: FilePath -> Usuario -> IO ()
+inserirUsuario fp us = appendFile fp (formatarUsuario us)
 
 listaUsParaArq :: FilePath -> [Usuario] -> IO ()
 listaUsParaArq fp listaUs = writeFile fp (unlines (map formatarUsuario listaUs))
+
+-- Arq Emprestimo
+inserirEmprestimo :: FilePath -> Emprestimo -> IO ()
+inserirEmprestimo fp emp = appendFile fp (formatarEmprestimo emp)
+
+listaEmpParaArq :: FilePath -> [Emprestimo] -> IO ()
+listaEmpParaArq fp listaEmp = writeFile fp (unlines (map formatarEmprestimo listaEmp))
+
+---
 
 -- Para Ler um item
 lendoItem :: IO Item
@@ -101,7 +111,7 @@ getNome = do putStr "Digite o nome: "
 
 getEmail :: IO String
 getEmail = do putStr "Digite o email: "
-              em <- getEmail
+              em <- getLine
               if validarEmail em == Invalido
                 then do putStrLn "Campo Inválido! Tente novamente!"
                         getEmail
@@ -114,3 +124,12 @@ getMatricula = do putStr "Digite a matricula: "
                    then do putStrLn "Campo Inválido! Tente novamente!"
                            getMatricula
                    else return (mat)
+
+-- Para ler um Empréstimo
+lendoEmprestimo :: IO Emprestimo
+lendoEmprestimo = do  
+               codIt' <- getCodigo
+               matUs' <- getMatricula
+               dd' <- getCurrentTime
+               let emp = Emprestimo {codigoIt = codIt', matriculaUs = matUs', dia = dd'}
+               return (emp)
