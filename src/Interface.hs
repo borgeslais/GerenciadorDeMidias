@@ -50,7 +50,7 @@ menuPrincipal listaIt listaUs listaEmp = do
     putStrLn "6 - Edição de Dados"
     putStrLn "7 - Exportação/Importação de Dados"
     putStrLn "8 - Auditoria e Histórico"
-    putStrLn "0 - Salvar e Sair"
+    putStrLn "0 - Sair"
     putStr "Digite uma opção: "
     
     opcao <- getLine
