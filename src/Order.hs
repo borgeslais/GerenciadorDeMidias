@@ -40,3 +40,8 @@ compareItem "AUTOR" i1 i2 = compare (autor i1) (autor i2)
 compareItem "TITULO" i1 i2 = compare (titulo i1) (titulo i2)
 compareItem "ANO" i1 i2 = compare (ano i1) (ano i2)
 compareItem "CODIGO" i1 i2 = compare (codigo i1) (codigo i2)
+
+compareUsuario :: String -> Usuario -> Usuario -> Ordering
+compareUsuario "NOME" u1 u2 = compare (nome u1) (nome u2)
+compareUsuario "EMAIL" u1 u2 = compare (email u1) (email u2)
+compareUsuario "MATRICULA" u1 u2 = compare (matricula u1) (matricula u2)
