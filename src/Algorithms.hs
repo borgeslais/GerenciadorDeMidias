@@ -14,7 +14,12 @@ quickSort f (x:xs) = quickSort f (filter (`mIg` x) xs) ++ [x] ++ quickSort f (fi
 ordenar :: String -> [Item] -> [Item]
 ordenar str xs = 
  let comp = compareItem str
- in quickSort comp xs                                                                    
+ in quickSort comp xs     
+
+ordenarUs :: String -> [Usuario] -> [Usuario]
+ordenarUs str xs = 
+ let comp = compareUsuario str
+ in quickSort comp xs 
 
 {- Fiz essa função para uma ideia que depois abandonei
    Deixei-a aí só em caso de vir a calhar em algum momento -}
@@ -35,8 +40,8 @@ strContemstr contida continente = if map toUpper contida == map toUpper parte
    nele o "valor genérico" correspondente. Assim, podemos
    realizar buscas exatas e também buscas com apenas
    alguns campos em uma mesma função busca.               -}
-igualFiltro :: Item -> Item -> Bool
-igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid] 
+igualFiltroIt :: Item -> Item -> Bool
+igualFiltroIt i1 i2 = all (==True) [tit, aut, an0, cod, mid] 
   where tit = if (titulo i1 == "") 
                then True else strContemstr (titulo i1) (titulo i2)
         aut = if (autor i1 == "")
@@ -49,9 +54,35 @@ igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid]
                then True else midia i1 == midia i2
 
 buscarIt :: Item -> [Item] -> [Item]
-buscarIt it xs = filter (igualFiltro it) xs
+buscarIt it xs = filter (igualFiltroIt it) xs
 
 buscarItCod :: String -> [Item] -> [Item]
 buscarItCod cod = buscarIt it
   where it = generico {codigo = cod}
         generico = Item {titulo = "", autor = "", ano = -50000, codigo = "", midia = Nenhum}
+
+buscarItRepetido :: Item -> [Item] -> [Item]
+buscarItRepetido it = buscarIt it'
+  where it' = it {codigo = ""}
+
+-- Para o Usuário
+igualFiltroUs :: Usuario -> Usuario -> Bool
+igualFiltroUs u1 u2 = all (==True) [nom, ema, mat] 
+  where nom = if (nome u1 == "") 
+               then True else (nome u1) == (nome u2)
+        ema = if (email u1 == "")
+               then True else (email u1) == (email u2)
+        mat = if (matricula u1 == "") 
+               then True else matricula u1 == matricula u2
+
+buscarUs :: Usuario -> [Usuario] -> [Usuario]
+buscarUs us xs = filter (igualFiltroUs us) xs
+
+buscarUsMat :: String -> [Usuario] -> [Usuario]
+buscarUsMat mat = buscarUs us
+  where us = generico {matricula = mat}
+        generico = Usuario {nome = "", email = "", matricula = ""}
+
+buscarUsRepetido :: Usuario -> [Usuario] -> [Usuario]
+buscarUsRepetido us = buscarUs us'
+  where us' = us {matricula = ""}
