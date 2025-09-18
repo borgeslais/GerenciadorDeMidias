@@ -36,7 +36,7 @@ strContemstr contida continente = if map toUpper contida == map toUpper parte
    realizar buscas exatas e também buscas com apenas
    alguns campos em uma mesma função busca.               -}
 igualFiltro :: Item -> Item -> Bool
-igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid, sta] 
+igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid] 
   where tit = if (titulo i1 == "") 
                then True else strContemstr (titulo i1) (titulo i2)
         aut = if (autor i1 == "")
@@ -47,16 +47,11 @@ igualFiltro i1 i2 = all (==True) [tit, aut, an0, cod, mid, sta]
                then True else codigo i1 == codigo i2
         mid = if (midia i1 == Nenhum)
                then True else midia i1 == midia i2
-        sta = if (status i1 == Nulo)
-               then True else status i1 == status i2
 
+buscarIt :: Item -> [Item] -> [Item]
+buscarIt it xs = filter (igualFiltro it) xs
 
-igualFiltroCod :: Item -> Item -> Bool
-igualFiltroCod item1 item2 = codigo item1 == codigo item2
-
-buscar :: Item -> [Item] -> [Item]
-buscar it xs = filter (igualFiltro it) xs
-
-buscarCod :: Item -> [Item] -> [Item]
-buscarCod it xs = filter (igualFiltroCod it) xs
-
+buscarItCod :: String -> [Item] -> [Item]
+buscarItCod cod = buscarIt it
+  where it = generico {codigo = cod}
+        generico = Item {titulo = "", autor = "", ano = -50000, codigo = "", midia = Nenhum}
