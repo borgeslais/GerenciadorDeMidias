@@ -4,14 +4,26 @@ import Data.Time (Year)
 import Data.Char (ord)
 import Data.Char (isAlphaNum, isDigit, isLetter, isSpace)
 import Data.List (elemIndex)
-import Algorithms (buscarCod)
+import Algorithms (buscarItCod)
+import Leitura (separarEm)
 
-{- Provisório. Trocá-lo-ei por uma função que verifica com o ano atual.
-Isso, porém, é uma operação de entrada, então a farei depois, separada das funções puras. -}
-validarAno :: Year -> Validade
-validarAno y
- | y >= -500 && y <= 2025 = Valido
- | otherwise = Invalido
+-- Bool pra Validade
+boolValidade :: Bool -> Validade
+boolValidade True = Valido
+boolValidade False = Invalido
+
+validarAnoString :: String -> Validade
+validarAnoString [] = Invalido
+validarAnoString (x:xs)
+ | x == '-' = testeNum xs
+ | otherwise = testeNum (x:xs)
+
+validarAnoYear :: Year -> TipoMidia -> Validade
+validarAnoYear y m =
+  case m of
+   Livro -> if (y >= 1800) && (y <= 2025) then Valido else Invalido
+   Filme -> if (y >= 1995) && (y <= 2025) then Valido else Invalido -- A partir do DVD
+   Jogo -> if (y >= 2000) && (y <= 2025) then Valido else Invalido  -- A partir da 6a ger. (ecluído o DreamCast)
 
 -- Não sei será necessário quando da implementação da interface.
 validarMidia :: String -> Validade
@@ -102,23 +114,23 @@ testeNum xs = if all isDigit xs
               then Valido
               else Invalido
 
--- Função auxiliar para verificar se código já existe
+-- Funções auxiliares para verificar se código já existe
 codigoJaExiste :: String -> [Item] -> Bool
-codigoJaExiste cod listaItens = 
-    let itemTemporario = Item { codigo = cod }
-        itensEncontrados = buscarCod itemTemporario listaItens
-    in not (null itensEncontrados)
+codigoJaExiste cod listaItens
+ | buscarItCod cod listaItens == [] = False
+ | otherwise = True
+
+validCodigo :: String -> Validade
+validCodigo xs
+ | length xs /= 4 = Invalido
+ | testeNum xs == Invalido = Invalido
+ | otherwise = Valido
 
 -- Função principal para validar o código
 validarCodigo :: String -> [Item] -> Validade
-validarCodigo xs listaItens = 
-    if length xs /= 4
-    then Invalido
-    else if testeNum xs == Invalido
-         then Invalido
-         else if codigoJaExiste xs listaItens
-              then Invalido
-              else Valido
+validarCodigo xs listaIt
+ | (validCodigo xs == Invalido) || (codigoJaExiste xs listaIt == True) = Invalido
+ | otherwise = Valido
 
 
 -- Fazer função de validação para o item inteiro, comparar todos os campos do item depois de ver se todos são válidos.
@@ -165,14 +177,8 @@ valUsuario user =
   not (last user == '.') &&
   not (valPontosConsecutivos user)
 
-divPorPonto :: String -> [String] -- Dividir string por pontos
-divPorPonto [] = [""]
-divPorPonto (x:xs)
-  | x == '.' = "" : divPorPonto xs
-  | otherwise = case divPorPonto xs of
-                  (y:ys) -> (x:y):ys
-                  [] -> [[x]]
 
+divPorPonto = separarEm '.' -- Dividir string por pontos
 
 valParteIndividual :: String -> Bool -- Validar uma parte individual do domínio
 valParteIndividual [] = False
@@ -206,9 +212,9 @@ valDominio dominio =
       not (last dominio == '.') &&
       not (valPontosConsecutivos dominio)
 
--- Função principal para validar EMAIL
-validarEmail :: String -> Bool
-validarEmail eMail =
+-- Função secundária para validar EMAIL
+validEmail :: String -> Bool
+validEmail eMail =
   case elemIndex '@' eMail of
     Nothing -> False -- Não tem @
     Just pos ->
@@ -217,3 +223,20 @@ validarEmail eMail =
       in valUsuario user &&
          valDominio dominio &&
          valArrobas eMail == 1
+         
+-- Função final para validar EMAIL
+validarEmail :: String -> Validade
+validarEmail xs = boolValidade (validEmail xs)
+
+----- VALIDAR ITEM inteiro
+validarItem :: Item -> Validade
+validarItem it = if validarTitulo (titulo it) == Valido &&
+                    validarAutor (autor it) == Valido &&
+                    (validarAnoYear (ano it) (midia it)) == Valido &&
+                    validCodigo (codigo it) == Valido &&
+                    validarMidia (show (midia it)) == Valido
+                   then Valido
+                   else Invalido
+
+filtrarItensValidos :: [Item] -> [Item]
+filtrarItensValidos xs = filter ((== Valido).(validarItem)) xs
