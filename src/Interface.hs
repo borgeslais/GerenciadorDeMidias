@@ -45,7 +45,7 @@ menuPrincipal listaIt listaUs = do
     putStrLn "6 - Edição de Dados"
     putStrLn "7 - Exportação/Importação de Dados"
     putStrLn "8 - Auditoria e Histórico"
-    putStrLn "0 - Salvar e Sair"
+    putStrLn "0 - Sair"
     putStr "Digite uma opção: "
     
     opcao <- getLine
@@ -58,7 +58,7 @@ menuPrincipal listaIt listaUs = do
         "6" -> menuEdicao listaIt
         "7" -> menuExpImp listaIt
         "8" -> menuAuditHist listaIt
-    -- Nao implementei o 0 ainda
+        "0" -> putStr "\nSaindo...\n"
         _   -> do
             putStrLn "\nOpção inválida!\n"
             menuPrincipal listaIt listaUs
