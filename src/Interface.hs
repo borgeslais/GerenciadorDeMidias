@@ -5,6 +5,7 @@ import Algorithms
 import Order
 import Validation
 import Leitura
+import Loans
 import FuncoesImpuras
 import Data.Time (Year)
 import System.IO (stdout, hSetBuffering, BufferMode (NoBuffering))
@@ -28,31 +29,35 @@ interface = do hSetBuffering stdout NoBuffering
                let w = lines conteudoUs
                length w `seq` return ()
                let z = filtrarUsuariosValidos (lerVariosUsuarios w)
-               menuPrincipal y z
+               conteudoEmp <- readFile "emprestimos.csv"
+               let g = lines conteudoEmp
+               length g `seq` return ()
+               let h = lerVariosEmprestimos g
+               menuPrincipal y z h
 
 
 -- MENU PRINCIPAL --
-menuPrincipal :: [Item] -> [Usuario] -> IO ()
-menuPrincipal listaIt listaUs = do
+menuPrincipal :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuPrincipal listaIt listaUs listaEmp = do
     linha
-    putStrLn "Sistema de Midias - Menu Principal"
+    putStrLn "  Sistema de Mı́dias - Menu Principal"
     linha
     putStrLn "1 - Cadastro de Itens"
     putStrLn "2 - Cadastro de Usuários"
     putStrLn "3 - Empréstimos e Devoluções"
     putStrLn "4 - Busca e Listagem Avançada"
-    putStrLn "5 - Relatórios e Estatisticas"
+    putStrLn "5 - Relatórios e Estatı́sticas"
     putStrLn "6 - Edição de Dados"
     putStrLn "7 - Exportação/Importação de Dados"
     putStrLn "8 - Auditoria e Histórico"
-    putStrLn "0 - Sair"
+    putStrLn "0 - Salvar e Sair"
     putStr "Digite uma opção: "
     
     opcao <- getLine
     case opcao of
-        "1" -> menuCadastroItens listaIt listaUs
-        "2" -> menuCadastroUsuarios listaIt listaUs
-        "3" -> menuEmpDev listaIt
+        "1" -> menuCadastroItens listaIt listaUs listaEmp
+        "2" -> menuCadastroUsuarios listaIt listaUs listaEmp
+        "3" -> menuEmpDev listaIt listaUs listaEmp
         "4" -> menuBuscaListagem listaIt
         "5" -> menuRelatEstat listaIt
         "6" -> menuEdicao listaIt
@@ -61,11 +66,11 @@ menuPrincipal listaIt listaUs = do
         "0" -> putStr "\nSaindo...\n"
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuPrincipal listaIt listaUs
+            menuPrincipal listaIt listaUs listaEmp
 
 -- SUBMENU: Cadastro de Itens --
-menuCadastroItens :: [Item] -> [Usuario] -> IO ()
-menuCadastroItens listaIt listaUs = do
+menuCadastroItens :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuCadastroItens listaIt listaUs listaEmp = do
     linha
     putStrLn "\tCadastro de Itens"
     linha
@@ -81,38 +86,39 @@ menuCadastroItens listaIt listaUs = do
                   if (validarItem it) == Valido &&
                      not (codigoJaExiste (codigo it) listaIt) &&
                      not (itemJaExiste it listaIt)
-                   then do inserirItem "itens.csv" it listaIt
+                   then do inserirItem "itens.csv" it
                            let novaListaIt = colocarNaLista it listaIt
-                           putStr ("\n" ++ (formatarItem it) ++ "\n")
-                           menuPrincipal novaListaIt listaUs
+                           putStrLn ("\n" ++ (formatarItem it))
+                           menuPrincipal novaListaIt listaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a inserção."
-                           menuCadastroItens listaIt listaUs
+                           menuCadastroItens listaIt listaUs listaEmp
 
         "2" -> do putStr (variosPorCod listaIt)
+                  putStr "Digite o codigo do item: "
                   cod <- getLine
                   if (codigoJaExiste cod listaIt)
                    then do let tirado = head (buscarItCod cod listaIt)
                            let novaListaIt = tirarDaLista tirado listaIt
                            listaItParaArq "itens.csv" novaListaIt
-                           putStr ("\n" ++ (show novaListaIt))
-                           menuPrincipal novaListaIt listaUs
+                           putStrLn ("\n" ++ (show novaListaIt))
+                           menuPrincipal novaListaIt listaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a remoção."
-                           menuCadastroItens listaIt listaUs
-                  
+                           menuCadastroItens listaIt listaUs listaEmp
+                   
         "3" -> do putStrLn (variosPorCod listaIt)
-                  putStr "Pressione qualquer Enter para continuar. "
+                  putStr "Pressione Enter para continuar. "
                   tecla <- getLine
                   case tecla of
-                    _ -> menuPrincipal listaIt listaUs
-        "0" -> menuPrincipal listaIt listaUs
+                    _ -> menuPrincipal listaIt listaUs listaEmp
+        "0" -> menuPrincipal listaIt listaUs listaEmp
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuCadastroItens listaIt listaUs          
+            menuCadastroItens listaIt listaUs listaEmp         
             
 
 -- SUBMENU: Cadastro de Usuários --
-menuCadastroUsuarios :: [Item] -> [Usuario] -> IO ()
-menuCadastroUsuarios listaIt listaUs = do
+menuCadastroUsuarios :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuCadastroUsuarios listaIt listaUs listaEmp = do
     linha
     putStrLn "\tCadastro de Usuarios"
     linha
@@ -128,36 +134,38 @@ menuCadastroUsuarios listaIt listaUs = do
                   if (validarUsuario us) == Valido &&
                      not (matriculaJaExiste (matricula us) listaUs) &&
                      not (usuarioJaExiste us listaUs)
-                   then do inserirUsuario "usuarios.csv" us listaUs
+                   then do inserirUsuario "usuarios.csv" us
                            let novaListaUs = colocarNaLista us listaUs
-                           putStr ("\n" ++ (formatarUsuario us))
-                           menuPrincipal listaIt listaUs
+                           putStrLn ("\n" ++ (formatarUsuario us))
+                           menuPrincipal listaIt novaListaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a inserção."
-                           menuCadastroItens listaIt listaUs
+                           menuCadastroItens listaIt listaUs listaEmp
 
-        "2" -> do putStr (variosPorMat listaUs)
+        "2" -> do putStrLn (variosPorMat listaUs)
+                  putStr "Digite a matricula do usuario: "
                   mat <- getLine
                   if (matriculaJaExiste mat listaUs)
                    then do let tirado = head (buscarUsMat mat listaUs)
                            let novaListaUs = tirarDaLista tirado listaUs
                            listaUsParaArq "usuarios.csv" novaListaUs
-                           putStr ("\n" ++ (show novaListaUs))
-                           menuPrincipal listaIt novaListaUs
+                           putStrLn ("\n" ++ (show novaListaUs))
+                           menuPrincipal listaIt novaListaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a remoção."
-                           menuCadastroItens listaIt listaUs
+                           menuCadastroItens listaIt listaUs listaEmp
         "3" -> do putStrLn (variosPorMat listaUs)
-                  putStr "Pressione qualquer Enter para continuar. "
+                  putStr "Pressione Enter para continuar. "
                   tecla <- getLine
                   case tecla of
-        "0" -> menuPrincipal listaIt listaUs
+                    _ -> menuPrincipal listaIt listaUs listaEmp
+        "0" -> menuPrincipal listaIt listaUs listaEmp
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuCadastroUsuarios listaIt listaUs
+            menuCadastroUsuarios listaIt listaUs listaEmp
 
 
 -- SUBMENU: Empréstimos e Devoluções  --
-menuEmpDev:: [Item] -> IO ()
-menuEmpDev listaIt = do
+menuEmpDev:: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuEmpDev listaIt listaUs listaEmp = do
     linha
     putStrLn "\tEmpréstimos e Devoluções"
     linha
@@ -168,18 +176,35 @@ menuEmpDev listaIt = do
     putStrLn "5 - Empréstimo/devolução em lote"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
-{-
+
     opcao <- getLine
     case opcao of
-        "1" -> 
-        "2" -> 
-        "3" -> 
-        "4" ->
-        "5" ->
-        "0" -> menuPrincipal listaIt listaUs
+        "1" -> do emp <- lendoEmprestimo
+                  inserirEmprestimo "emprestimos.csv" emp
+                  let novaListaEmp = colocarNaLista emp listaEmp
+                  putStrLn ("\n" ++ (formatarEmprestimo emp))
+                  menuPrincipal listaIt listaUs novaListaEmp
+                  
+        "2" -> do putStrLn (relacaoDeVariosEmprestimos listaEmp listaUs listaIt)
+                  putStr "Digite o codigo do item: "
+                  codIt <- getLine
+                  let tirado = head (buscarEmpCod codIt listaEmp)
+                  let novaListaEmp = tirarDaLista tirado listaEmp
+                  listaEmpParaArq "emprestimos.csv" novaListaEmp
+                  putStrLn ("\n" ++ (show novaListaEmp))
+                  menuPrincipal listaIt listaUs novaListaEmp
+                  
+        "3" -> do putStrLn (relacaoDeVariosEmprestimos listaEmp listaUs listaIt)
+                  putStr "Pressione Enter para continuar. "
+                  tecla <- getLine
+                  case tecla of
+                    _ -> menuPrincipal listaIt listaUs listaEmp
+       {- "4" ->
+        "5" -> -}
+        "0" -> menuPrincipal listaIt listaUs listaEmp
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuEmpDev listaIt           -}
+            menuEmpDev listaIt listaUs listaEmp
             
 
 
@@ -189,11 +214,11 @@ menuBuscaListagem listaIt = do
     linha
     putStrLn "\tBusca e Listagem Avançada"
     linha
-    putStrLn "1 - Buscar por titulo"
+    putStrLn "1 - Buscar por tı́tulo"
     putStrLn "2 - Buscar por autor/diretor"
     putStrLn "3 - Busca combinada (múltiplos campos)"
     putStrLn "4 - Filtrar por categoria"
-    putStrLn "5 - Ordenar resultados (titulo, ano, autor/diretor)"
+    putStrLn "5 - Ordenar resultados (tı́tulo, ano, autor/diretor)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
 {-
@@ -211,16 +236,16 @@ menuBuscaListagem listaIt = do
             
             
 
--- SUBMENU: Relatórios e Estatisticas --
+-- SUBMENU: Relatórios e Estatı́sticas --
 menuRelatEstat :: [Item] -> IO ()
 menuRelatEstat listaIt = do
     linha
-    putStrLn "\tRelatórios e Estatisticas"
+    putStrLn "\tRelatórios e Estatı́sticas"
     linha
     putStrLn "1 - Empréstimos ativos (por categoria)"
     putStrLn "2 - Usuários mais ativos"
     putStrLn "3 - Itens mais emprestados"
-    putStrLn "4 - Frequência de empréstimos por periodo"
+    putStrLn "4 - Frequência de empréstimos por perı́odo"
     putStrLn "5 - Itens com lista de espera"
     putStrLn "6 - Relatório de operações (por usuário/tipo de item)"
     putStrLn "0 - Voltar ao menu principal"
