@@ -17,6 +17,8 @@ ghc --version
 cabal --version
 stack --version
 
+````
+
 ## Estrutura do Projeto
 
 GerenciadorDeMidias/
