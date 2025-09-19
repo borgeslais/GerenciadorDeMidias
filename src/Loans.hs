@@ -20,7 +20,7 @@ relacaoDeVariosEmprestimos lE lU lI = unlines (map (relEmp) lE)
   where relEmp emp = relacaoDeUmEmprestimo emp lU lI
 
 formatarEmprestimo :: Emprestimo -> String
-formatarEmprestimo emp = "\n" ++ (codigoIt emp) ++ "," ++
+formatarEmprestimo emp = (codigoIt emp) ++ "," ++
                          (matriculaUs emp) ++ "," ++
                          (show (dia emp))
 
@@ -34,3 +34,4 @@ lerEmprestimo xs = Emprestimo {
 lerVariosEmprestimos :: [String] -> [Emprestimo]
 lerVariosEmprestimos [] = []
 lerVariosEmprestimos (x:xs) = lerEmprestimo x : lerVariosEmprestimos xs
+
