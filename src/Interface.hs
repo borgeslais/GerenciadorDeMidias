@@ -40,13 +40,13 @@ interface = do hSetBuffering stdout NoBuffering
 menuPrincipal :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
 menuPrincipal listaIt listaUs listaEmp = do
     linha
-    putStrLn "  Sistema de Mı́dias - Menu Principal"
+    putStrLn "  Sistema de Midias - Menu Principal"
     linha
     putStrLn "1 - Cadastro de Itens"
     putStrLn "2 - Cadastro de Usuários"
     putStrLn "3 - Empréstimos e Devoluções"
     putStrLn "4 - Busca e Listagem Avançada"
-    putStrLn "5 - Relatórios e Estatı́sticas"
+    putStrLn "5 - Relatórios e Estatisticas"
     putStrLn "6 - Edição de Dados"
     putStrLn "7 - Auditoria e Histórico"
     putStrLn "0 - Salvar e Sair"
@@ -87,6 +87,7 @@ menuCadastroItens listaIt listaUs listaEmp = do
                    then do inserirItem "itens.csv" it
                            let novaListaIt = colocarNaLista it listaIt
                            putStrLn ("\n" ++ (formatarItem it))
+                           logMessage ("Item adicionado," ++ codigo it)
                            menuPrincipal novaListaIt listaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a inserção."
                            menuCadastroItens listaIt listaUs listaEmp
@@ -99,6 +100,7 @@ menuCadastroItens listaIt listaUs listaEmp = do
                            let novaListaIt = tirarDaLista tirado listaIt
                            listaItParaArq "itens.csv" novaListaIt
                            putStrLn ("\n" ++ (show novaListaIt))
+                           logMessage ("Item removido," ++ cod)
                            menuPrincipal novaListaIt listaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a remoção."
                            menuCadastroItens listaIt listaUs listaEmp
@@ -135,6 +137,7 @@ menuCadastroUsuarios listaIt listaUs listaEmp = do
                    then do inserirUsuario "usuarios.csv" us
                            let novaListaUs = colocarNaLista us listaUs
                            putStrLn ("\n" ++ (formatarUsuario us))
+                           logMessage ("Usuário cadastrado," ++ matriculaUs)
                            menuPrincipal listaIt novaListaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a inserção."
                            menuCadastroItens listaIt listaUs listaEmp
@@ -147,6 +150,7 @@ menuCadastroUsuarios listaIt listaUs listaEmp = do
                            let novaListaUs = tirarDaLista tirado listaUs
                            listaUsParaArq "usuarios.csv" novaListaUs
                            putStrLn ("\n" ++ (show novaListaUs))
+                           logMessage ("Usuário removido," ++ mat)
                            menuPrincipal listaIt novaListaUs listaEmp
                    else do putStrLn "Ocorreu algo de errado com a remoção."
                            menuCadastroItens listaIt listaUs listaEmp
@@ -181,6 +185,7 @@ menuEmpDev listaIt listaUs listaEmp = do
                   inserirEmprestimo "emprestimos.csv" emp
                   let novaListaEmp = colocarNaLista emp listaEmp
                   putStrLn ("\n" ++ (formatarEmprestimo emp))
+                  logMessage ("Empréstimo," ++ codigoIt emp ++ matriculaUs emp)
                   menuPrincipal listaIt listaUs novaListaEmp
                   
         "2" -> do putStrLn (relacaoDeVariosEmprestimos listaEmp listaUs listaIt)
@@ -189,6 +194,7 @@ menuEmpDev listaIt listaUs listaEmp = do
                   let tirado = head (buscarEmpCod codIt listaEmp)
                   let novaListaEmp = tirarDaLista tirado listaEmp
                   listaEmpParaArq "emprestimos.csv" novaListaEmp
+                  logMessage ("Devolução," ++ codIt ++ matriculaUs tirado)
                   putStrLn ("\n" ++ (show novaListaEmp))
                   menuPrincipal listaIt listaUs novaListaEmp
                   
@@ -212,11 +218,11 @@ menuBuscaListagem listaIt listaUs listaEmp = do
     linha
     putStrLn "\tBusca e Listagem Avançada"
     linha
-    putStrLn "1 - Buscar por tı́tulo"
+    putStrLn "1 - Buscar por titulo"
     putStrLn "2 - Buscar por autor/diretor"
     putStrLn "3 - Busca combinada (múltiplos campos)"
     putStrLn "4 - Filtrar por categoria"
-    putStrLn "5 - Ordenar resultados (tı́tulo, ano, autor/diretor)"
+    putStrLn "5 - Ordenar resultados (titulo, ano, autor/diretor)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
 
@@ -298,16 +304,16 @@ menuBuscaListagem listaIt listaUs listaEmp = do
             
             
 
--- SUBMENU: Relatórios e Estatı́sticas --
+-- SUBMENU: Relatórios e Estatisticas --
 menuRelatEstat :: [Item] -> IO ()
 menuRelatEstat listaIt = do
     linha
-    putStrLn "\tRelatórios e Estatı́sticas"
+    putStrLn "\tRelatórios e Estatisticas"
     linha
     putStrLn "1 - Empréstimos ativos (por categoria)"
     putStrLn "2 - Usuários mais ativos"
     putStrLn "3 - Itens mais emprestados"
-    putStrLn "4 - Frequência de empréstimos por perı́odo"
+    putStrLn "4 - Frequência de empréstimos por periodo"
     putStrLn "5 - Itens com lista de espera"
     putStrLn "6 - Relatório de operações (por usuário/tipo de item)"
     putStrLn "0 - Voltar ao menu principal"
