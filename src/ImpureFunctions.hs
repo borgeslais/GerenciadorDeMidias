@@ -9,23 +9,14 @@ import Validation
 import Data.Time (Year, getCurrentTime)
 
 -- Arq Item
-inserirItem :: FilePath -> Item -> IO ()
-inserirItem fp it = appendFile fp (formatarItem it)
-
 listaItParaArq :: FilePath -> [Item] -> IO ()
 listaItParaArq fp listaIt = writeFile fp (unlines (map formatarItem listaIt))
 
 -- Arq Usuario
-inserirUsuario :: FilePath -> Usuario -> IO ()
-inserirUsuario fp us = appendFile fp (formatarUsuario us)
-
 listaUsParaArq :: FilePath -> [Usuario] -> IO ()
 listaUsParaArq fp listaUs = writeFile fp (unlines (map formatarUsuario listaUs))
 
 -- Arq Emprestimo
-inserirEmprestimo :: FilePath -> Emprestimo -> IO ()
-inserirEmprestimo fp emp = appendFile fp (formatarEmprestimo emp)
-
 listaEmpParaArq :: FilePath -> [Emprestimo] -> IO ()
 listaEmpParaArq fp listaEmp = writeFile fp (unlines (map formatarEmprestimo listaEmp))
 
