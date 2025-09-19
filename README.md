@@ -1,6 +1,7 @@
 # GerenciadorDeMidias
 
 Felipe Morotti, Lais Borges, Pedro Paulo, Gabriel Gama e Felipe Cardoso
+
 Projeto em Haskell para gerenciamento de mídias.
 
 ## Pré-requisitos
