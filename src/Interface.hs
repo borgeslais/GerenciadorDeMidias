@@ -7,6 +7,7 @@ import Validation
 import Reading
 import Loans
 import ImpureFunctions
+import Logs
 import Data.Time (Year)
 import System.IO (stdout, hSetBuffering, BufferMode (NoBuffering))
 
