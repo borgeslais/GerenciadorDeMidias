@@ -56,8 +56,8 @@ formatarItem it = (titulo it) ++ "," ++
 
 formatarUsuario :: Usuario -> String
 formatarUsuario us = (nome us) ++ "," ++
-                  (email us) ++ "," ++
-                  (matricula us)
+                     (email us) ++ "," ++
+                     (matricula us)
 
 
 mostrarPorCod :: Item -> String
