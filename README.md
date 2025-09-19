@@ -34,15 +34,10 @@ GerenciadorDeMidias/
 
 
 ## Para compilar e executar
-usando stack (recomendado)
-
-```bash
-stack setup     # prepara o compilador (apenas na primeira vez)
-stack build     # compila
-stack run       # executa
- ```
-ou usando cabal
-```bash
-cabal v2-build          # compila
-cabal v2-run GerenciadorDeMidias # executa
-```
+no terminal, vá até a pasta "src" e digite os comandos:
+para compilar:
+no Linux: ghc Main
+no Windows: ghc Main.hs
+para executar:
+no Linux: ./Main
+no Windows .\Main.exe
