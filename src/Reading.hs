@@ -87,3 +87,6 @@ tirarDaLista _ [] = []
 tirarDaLista n (x:xs) = if n == x
                          then xs
                          else [x] ++ tirarDaLista n xs 
+
+exibirItem :: Item -> String
+exibirItem it = (show it) ++ "\n" 
