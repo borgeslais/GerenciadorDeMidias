@@ -48,9 +48,8 @@ menuPrincipal listaIt listaUs listaEmp = do
     putStrLn "4 - Busca e Listagem Avançada"
     putStrLn "5 - Relatórios e Estatı́sticas"
     putStrLn "6 - Edição de Dados"
-    putStrLn "7 - Exportação/Importação de Dados"
-    putStrLn "8 - Auditoria e Histórico"
-    putStrLn "0 - Sair"
+    putStrLn "7 - Auditoria e Histórico"
+    putStrLn "0 - Salvar e Sair"
     putStr "Digite uma opção: "
     
     opcao <- getLine
@@ -58,11 +57,10 @@ menuPrincipal listaIt listaUs listaEmp = do
         "1" -> menuCadastroItens listaIt listaUs listaEmp
         "2" -> menuCadastroUsuarios listaIt listaUs listaEmp
         "3" -> menuEmpDev listaIt listaUs listaEmp
-        "4" -> menuBuscaListagem listaIt
+        "4" -> menuBuscaListagem listaIt listaUs listaEmp
         "5" -> menuRelatEstat listaIt
-        "6" -> menuEdicao listaIt
-        "7" -> menuExpImp listaIt
-        "8" -> menuAuditHist listaIt
+        "6" -> menuEdicao listaIt listaUs listaEmp
+        "7" -> menuAuditHist listaIt
         "0" -> putStr "\nSaindo...\n"
         _   -> do
             putStrLn "\nOpção inválida!\n"
@@ -172,8 +170,8 @@ menuEmpDev listaIt listaUs listaEmp = do
     putStrLn "1 - Registrar empréstimo"
     putStrLn "2 - Registrar devolução"
     putStrLn "3 - Visualizar empréstimos ativos"
-    putStrLn "4 - Renovar empréstimo"
-    putStrLn "5 - Empréstimo/devolução em lote"
+    {-putStrLn "4 - Renovar empréstimo"
+    putStrLn "5 - Empréstimo/devolução em lote"-}
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
 
@@ -209,8 +207,8 @@ menuEmpDev listaIt listaUs listaEmp = do
 
 
 -- SUBMENU: Busca e Listagem Avançada --
-menuBuscaListagem :: [Item] -> IO ()
-menuBuscaListagem listaIt = do
+menuBuscaListagem :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuBuscaListagem listaIt listaUs listaEmp = do
     linha
     putStrLn "\tBusca e Listagem Avançada"
     linha
@@ -221,18 +219,82 @@ menuBuscaListagem listaIt = do
     putStrLn "5 - Ordenar resultados (tı́tulo, ano, autor/diretor)"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
-{-
+
     opcao <- getLine
     case opcao of
-        "1" -> 
-        "2" -> 
-        "3" -> 
-        "4" ->
-        "5" ->
-        "0" -> menuPrincipal listaIt listaUs
+        "1" -> do let generico = Item {titulo = "", autor = "", ano = -50000, codigo = "", midia = Nenhum}
+                  tit <- getTitulo
+                  let it = generico {titulo = tit}
+                  let listaBusca = buscarIt it listaIt
+                  putStrLn (concat (map exibirItem listaBusca))
+                  menuPrincipal listaIt listaUs listaEmp
+                  
+        "2" -> do let generico = Item {titulo = "", autor = "", ano = -50000, codigo = "", midia = Nenhum}
+                  aut <- getAutor Livro
+                  let it = generico {autor = aut}
+                  let listaBusca = buscarIt it listaIt
+                  putStrLn (concat (map exibirItem listaBusca))
+                  menuPrincipal listaIt listaUs listaEmp
+                  
+        "3" -> do tit <- talvezTit
+                  aut <- talvezAut
+                  an0 <- talvezAno
+                  mid <- talvezMidia
+                  let it = Item {titulo = tit, autor = aut, ano = an0, codigo = "", midia = mid}
+                  let listaBusca = buscarIt it listaIt
+                  putStrLn (concat (map exibirItem listaBusca))
+                  menuPrincipal listaIt listaUs listaEmp
+                  
+        "4" -> do putStrLn "Filtrar por: "
+                  putStrLn "1 - Livro"
+                  putStrLn "2 - Filme"
+                  putStrLn "3 - Jogo"
+                  putStrLn "0 - Voltar para o menu de Busca"
+                  putStr "Digite uma opção: "
+                  campo <- getLine
+                  let generico = Item {titulo = "", autor = "", ano = -50000, codigo = "", midia = Nenhum}
+                  case campo of
+                    "1" -> do let it = generico {midia = Livro}
+                              let listaBusca = buscarIt it listaIt
+                              putStrLn (concat (map exibirItem listaBusca))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "2" -> do let it = generico {midia = Filme}
+                              let listaBusca = buscarIt it listaIt
+                              putStrLn (concat (map exibirItem listaBusca))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "3" -> do let it = generico {midia = Jogo}
+                              let listaBusca = buscarIt it listaIt
+                              putStrLn (concat (map exibirItem listaBusca))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "0" -> menuBuscaListagem listaIt listaUs listaEmp
+                    _ -> do putStrLn "Campo Inválido! Tente novamente!"
+                            menuBuscaListagem listaIt listaUs listaEmp
+
+        "5" -> do putStrLn "Ordenar por: "
+                  putStrLn "1 - Titulo"
+                  putStrLn "2 - Ano"
+                  putStrLn "3 - Autor"
+                  putStrLn "0 - Voltar para o menu de Busca"
+                  putStr "Digite uma opção: "
+                  op <- getLine
+                  case op of
+                    "1" -> do let listaOrdenada = ordenar "TITULO" listaIt
+                              putStrLn (concat (map exibirItem listaOrdenada))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "2" -> do let listaOrdenada = ordenar "ANO" listaIt
+                              putStrLn (concat (map exibirItem listaOrdenada))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "3" -> do let listaOrdenada = ordenar "AUTOR" listaIt
+                              putStrLn (concat (map exibirItem listaOrdenada))
+                              menuPrincipal listaIt listaUs listaEmp
+                    "0" -> menuBuscaListagem listaIt listaUs listaEmp
+                    _ -> do putStrLn "Campo Inválido! Tente novamente!"
+                            menuBuscaListagem listaIt listaUs listaEmp
+
+        "0" -> menuPrincipal listaIt listaUs listaEmp
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuBuscaListagem listaIt           -}
+            menuBuscaListagem listaIt listaUs listaEmp 
             
             
 
@@ -267,8 +329,8 @@ menuRelatEstat listaIt = do
 
 
 -- SUBMENU: Edição de Dados --
-menuEdicao :: [Item] -> IO ()
-menuEdicao listaIt = do
+menuEdicao :: [Item] -> [Usuario] -> [Emprestimo] -> IO ()
+menuEdicao listaIt listaUs listaEmp = do
     linha
     putStrLn "\tEdição de Dados"
     linha
@@ -276,37 +338,76 @@ menuEdicao listaIt = do
     putStrLn "2 - Editar usuário"
     putStrLn "0 - Voltar ao menu principal"
     putStr "Digite uma opção: "
-{-
+
     opcao <- getLine
     case opcao of
-        "1" -> 
-        "2" -> 
-        "0" -> menuPrincipal listaIt listaUs
+        "1" -> do putStrLn "Do item que deseja editar: "
+                  cod <- getCodigo
+                  if codigoJaExiste cod listaIt
+                   then do let it = head (buscarItCod cod listaIt)
+                           putStrLn (show it)
+                           putStrLn "Qual campo deseja substituir?"
+                           putStrLn "1 - Titulo"
+                           putStrLn "2 - Autor"
+                           putStrLn "3 - Ano"
+                           putStr "Opcao: "
+                           op <- getLine
+                           case op of
+                              "1" -> do tit <- getTitulo
+                                        let novoIt = it {titulo = tit}
+                                        let novaListaIt = tirarDaLista it listaIt
+                                        let novaListaIt' = colocarNaLista novoIt novaListaIt
+                                        listaItParaArq "itens.csv" novaListaIt'
+                                        menuPrincipal novaListaIt' listaUs listaEmp
+                              "2" -> do aut <- getAutor (midia it)
+                                        let novoIt = it {autor = aut}
+                                        let novaListaIt = tirarDaLista it listaIt
+                                        let novaListaIt' = colocarNaLista novoIt novaListaIt
+                                        listaItParaArq "itens.csv" novaListaIt'
+                                        menuPrincipal novaListaIt' listaUs listaEmp
+                              "3" -> do an0 <- getAno (midia it)
+                                        let novoIt = it {ano = an0}
+                                        let novaListaIt = tirarDaLista it listaIt
+                                        let novaListaIt' = colocarNaLista novoIt novaListaIt
+                                        listaItParaArq "itens.csv" novaListaIt'
+                                        menuPrincipal novaListaIt' listaUs listaEmp
+                              _ -> do putStrLn "Codigo invalido! Tente novamente"
+                                      menuEdicao listaIt listaUs listaEmp
+                   else do putStrLn "Resposta invalida! Tente novamente"
+                           menuEdicao listaIt listaUs listaEmp
+
+        "2" -> do putStrLn "Do Usuario que deseja editar: "
+                  mat <- getMatricula
+                  if matriculaJaExiste mat listaUs
+                   then do let us = head (buscarUsMat mat listaUs)
+                           putStrLn (show us)
+                           putStrLn "Qual campo deseja substituir?"
+                           putStrLn "1 - Nome"
+                           putStrLn "2 - Email"
+                           putStr "Opcao: "
+                           op <- getLine
+                           case op of
+                              "1" -> do nom <- getNome
+                                        let novoUs = us {nome = nom}
+                                        let novaListaUs = tirarDaLista us listaUs
+                                        let novaListaUs' = colocarNaLista novoUs novaListaUs
+                                        listaUsParaArq "usuarios.csv" novaListaUs'
+                                        menuPrincipal listaIt novaListaUs' listaEmp
+                              "2" -> do ema <- getEmail
+                                        let novoUs = us {email = ema}
+                                        let novaListaUs = tirarDaLista us listaUs
+                                        let novaListaUs' = colocarNaLista novoUs novaListaUs
+                                        listaUsParaArq "usuarios.csv" novaListaUs'
+                                        menuPrincipal listaIt novaListaUs' listaEmp
+                              _ -> do putStrLn "Resposta invalida! Tente novamente"
+                                      menuEdicao listaIt listaUs listaEmp
+                   else do putStrLn "Codigo invalido! Tente novamente"
+                           menuEdicao listaIt listaUs listaEmp
+
+        "0" -> menuPrincipal listaIt listaUs listaEmp
         _   -> do
             putStrLn "\nOpção inválida!\n"
-            menuEdicao listaIt           -}
-
-
-
--- SUBMENU: Exportação/Importação --
-menuExpImp :: [Item] -> IO ()
-menuExpImp listaIt = do
-    linha
-    putStrLn "\tExportação/Importação"
-    linha
-    putStrLn "1 - Exportar dados para CSV"
-    putStrLn "2 - Importar dados de CSV"
-    putStrLn "0 - Voltar ao menu principal"
-    putStr "Digite uma opção: "
-{-
-    opcao <- getLine
-    case opcao of
-        "1" -> 
-        "2" -> 
-        "0" -> menuPrincipal listaIt listaUs
-        _   -> do
-            putStrLn "\nOpção inválida!\n"
-            menuExpImp listaIt           -}
+            menuEdicao listaIt listaUs listaEmp
 
 
 -- SUBMENU: Auditoria e Histórico --
