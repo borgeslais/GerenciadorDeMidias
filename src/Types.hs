@@ -30,7 +30,7 @@ data Usuario = Usuario
 data Emprestimo = Emprestimo
   { codigoIt :: String
   , matriculaUs :: String
-  , dia :: Day
+  , dia :: UTCTime
   } deriving (Show, Eq)
 
 -- INSTÂNCIAS --
