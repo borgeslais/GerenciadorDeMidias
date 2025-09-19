@@ -34,10 +34,17 @@ GerenciadorDeMidias/
 
 
 ## Para compilar e executar
+
 no terminal, vá até a pasta "src" e digite os comandos:
+
 para compilar:
+
 no Linux: ghc Main
+
 no Windows: ghc Main.hs
+
 para executar:
+
 no Linux: ./Main
+
 no Windows .\Main.exe
