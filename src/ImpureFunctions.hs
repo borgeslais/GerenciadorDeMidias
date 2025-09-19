@@ -133,3 +133,43 @@ lendoEmprestimo = do
                dd' <- getCurrentTime
                let emp = Emprestimo {codigoIt = codIt', matriculaUs = matUs', dia = dd'}
                return (emp)
+
+
+talvezTit :: IO String
+talvezTit = do 
+   putStr "Deseja pesquisar por titulo? (s/n) "
+   opcao <- getLine
+   case opcao of
+      "s" -> getTitulo
+      "n" -> return ""
+      _ -> do putStrLn "Opcao Invalida! Tente novamente!"
+              talvezTit
+
+talvezAut :: IO String
+talvezAut = do putStr "Deseja pesquisar por autor? (s/n) "
+               opcao <- getLine
+               case opcao of
+                 "s" -> getAutor Livro
+                 "n" -> return ""
+                 _ -> do putStrLn "Opcao Invalida! Tente novamente!"
+                         talvezAut
+                      
+talvezAno :: IO Year
+talvezAno = do putStr "Deseja pesquisar por ano? (s/n) "
+               opcao <- getLine
+               case opcao of
+                       "s" -> getAno Nenhum
+                       "n" -> return (-50000) 
+                       _ -> do putStrLn "Opcao Invalida! Tente novamente!"
+                               talvezAno
+
+talvezMidia :: IO TipoMidia
+talvezMidia = do putStr "Deseja pesquisar por midia? (s/n) "
+                 opcao <- getLine
+                 case opcao of
+                         "s" -> getMidia
+                         "n" -> return Nenhum
+                         _ -> do putStrLn "Opcao Invalida! Tente novamente!"
+                                 talvezMidia
+
+----
